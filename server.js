@@ -25,10 +25,6 @@ var FunnelObj = require('./FunnelObj.class.js') ;
 var data = "" ;
 var activateState = Boolean(false) ;
 var mysql_creds = {} ;
-var vcap_services = undefined ;
-var dbClient = undefined ;
-var dbConnectState = Boolean(false) ;
-var dbConnectTimer = undefined ;
 
 // Setup based on Environment Variables
 
@@ -44,127 +40,6 @@ if ("host" in mysql_creds) {
     activateState = Boolean(true) ;
 }
 
-/// FIXME: DELETE ----vv
-
-function sql2json(request, response, error, results, fields) {
-    if (error) {
-        dbError(response, error) ;
-    } else {
-        var dataSet = [] ;
-        for (var kv in results) {
-            dataSet.push( [ results[kv]['K'], results[kv]['V'] ] ) ;
-        }
-        response.end(JSON.stringify(dataSet)) ;
-    }
-}
-
-function dbError(response, error) {
-    console.error("ERROR getting values: " + error) ;
-    response.writeHead(500) ;
-    response.end("ERROR getting values: " + JSON.stringify(error)) ;
-}
-    
-function errorDbNotReady(response) {
-    errHTML = "<title>Error</title><H1>Error</H1>\n"
-    errHTML += "<p>Database info is not set or DB is not ready<br>\n" ;
-    errHTML += "<hr><A HREF=\"/dbstatus\">/dbstatus</A>\n" ;
-    response.writeHead(500) ;
-    response.end(errHTML) ;
-}
-
-function readTable(request, response, table, callBack) {
-    if ("mysql" == activateState && dbConnectState) {
-        dbClient.query('SELECT K, V from ' + table,
-                       function (error, results, fields) {
-                           callBack(request, response, error, results, fields) ;
-                       }) ;
-    } else {
-        errorDbNotReady(request, response) ;
-    }
-}
-
-function handleWriteState(error, results, fields, response) {
-    if (error) {
-        dbClient.rollback(function() {
-            dbError(response, error) ;
-        }) ;
-    } else {
-        dbClient.commit(function(err) {
-            if (err) {
-                dbClient.rollback(function() {
-                    dbError(response, err) ;
-                }) ;
-            } else {
-                response.writeHead("200") ;
-                response.end("Succeeded.") ;
-                console.log("Added note / updated state.") ;
-            }
-        }) ;
-    }
-}
-
-function writeState(error, results, fields, customerID, stateID, response) {
-    if (error) {
-        dbClient.rollback(function() {
-            dbError(response, error) ;
-        }) ;
-    } else {
-        dbClient.query("update Customer SET StateID = ? where CustomerID = ?",
-                       [stateID, customerID], function (error, results, fields) {
-                           handleWriteState(error, results, fields, response)
-                       }) ;
-    }
-}
-
-function writeNote(httpquery, error, results, fields, stateID, response) {
-    if (error) { dbError(response, error) }
-    else if (0 == results.length) {
-        dbError(response, "Invalid Customer Name") ;
-    } else {
-        var customerID = results[0]["CustomerID"] ;
-        var values = ["NULL", customerID, stateID, dbClient.escape(query["note"]), "NOW()"].join(",") ;
-        var sql = "insert into Note values (" + values + ")" ;
-        console.log("SQL: " + sql) ;
-        dbClient.beginTransaction(function(err) {
-            if (err) { throw err; }
-            dbClient.query(sql, function (error, results, fields) {
-                writeState(error, results, fields, customerID, stateID, response) ;
-            }) ;
-        }) ;
-    }
-}
-
-// Take the results of mapState, add on a customer
-function mapCustomer(httpquery, error, results, fields, callback, response) {
-    if (error) { dbError(response, error) }
-    else if (0 == results.length) {
-        dbError(response, "Invalid State") ;
-    } else {
-        var stateID = results[0]["StateID"] ;
-        var sql = "select CustomerID from Customer where Name LIKE ?" ;
-        dbClient.query(sql, httpquery["custName"], function (error, results, fields) {
-            callback(httpquery, error, results, fields, stateID, response) ;
-        }) ;
-    }
-}
-
-function mapState(response, httpquery) {
-    var sql = "select StateID from State where Name LIKE ?" ;
-    dbClient.query(sql, httpquery["state"], function (error, results, fields) {
-        mapCustomer(httpquery, error, results, fields, writeNote, response) ;
-    }) ;
-}
-
-// recordNewState -> mapState -> mapCustomer -> writeNote -> writeState -> handleWriteState
-function recordNewState(response, httpquery) {
-    if ("mysql" == activateState && dbConnectState) {
-        mapState(response, httpquery) ;
-    } else {
-        errorDbNotReady(response) ;
-    }
-}
-
-/// FIXME: DELETE ----^^
 
 function dispatchApi(funnelObj, request, response, method, query) {
     console.log("Received JSON request for: " + method) ;
