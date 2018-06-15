@@ -1,0 +1,8 @@
+---
+applications:
+- name: funnel-api
+  buildpack: nodejs_buildpack
+  memory: 128M
+  services:
+  - funnelDB
+
