@@ -1,0 +1,38 @@
+<!-- this is a minature version of http://funnel-api.cfapps.io/ -->
+
+<html>
+  <head>
+    <base href="/">
+    <!-- base href="http://localhost:8080/" -->
+    <title>New Customer Evidence</title>
+    <script type="text/javascript" src="popup.js"></script>
+    <link rel="stylesheet" href="http://funnel-api.cfapps.io/tables.css">
+    <link rel="stylesheet" href="http://funnel-api.cfapps.io/page.css">
+  </head>
+  <body>
+    <h1>New Customer Evidence</h1>
+    <table id="inputEvidence">
+      <tr><th>Customer</th>
+        <th>Tag</th>
+        <th>Date</th>
+        <th>Snippet</th>
+        <th>Source URL</th>
+        <th></th></tr>
+      <tbody id="formBody">
+        <tr>
+          <form action="/json/newEvidenceByCustomerID" method="put">
+            <td><select name="customerID" id="customerlist"></select></td>
+            <td><select name="tagID" id="taglist"></select></td>
+            <td><input type="text" size=11 name="date" id="href"></input></td>
+            <td><textarea rows="4" cols="30" name="snippet" id="snippet"></textarea></td>
+            <td><input type="text" size=30 name="href" id="href"></input></td>
+            <td><input type="submit"></input></td>
+          </form>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px">Current DB
+      status: <b><span id="dbstatus"></span></b></p>
+    <button id="refreshButton">Refresh</button>
+  </body>
+</html>

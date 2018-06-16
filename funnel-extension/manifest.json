@@ -1,0 +1,31 @@
+{
+    "name": "Funnel Evidence Extension",
+    "version": "1.0",
+    "description": "Add a context menu to send highlighted text to the Funnel API.",
+    "background": {
+        "scripts": ["funnel-evidence.js"],
+        "persistent": false
+    },
+    "permissions" : [
+        "tabs",
+        "declarativeContent",
+        "clipboardWrite",
+        "activeTab"
+    ],
+    "page_action": {
+        "default_icon": {
+            "16": "funnel-16x16.png"
+        },
+        "default_popup": "popup.html",
+        "default_title": "Send highlighted text to the Funnel API."
+    },
+    "commands": {
+        "_execute_page_action": {
+            "suggested_key": {
+                "default": "Ctrl+Space",
+                "mac": "MacCtrl+Space"
+            }
+        }
+    },
+    "manifest_version": 2
+}
