@@ -115,7 +115,7 @@ class FunnelDB {
     getCustomer(response, name, cb) {
         if (this.activateState && this.dbConnectState) {
             let sql = "select * from Customer where Name LIKE ?" ;
-            console.log("SQL: " + sql + " and Name: " + name) ;
+            console.log("SQL: " + sql + "\n... and Name: " + name) ;
             this.dbClient.query(sql, name, (error, results, fields) => {
                 cb(response, name, error, results, fields) ;
             }) ;
@@ -127,6 +127,7 @@ class FunnelDB {
 
     //
     addCustomer(response, name, cb) {
+        console.log("fDB.addCustomer called") ;
         if (this.activateState && this.dbConnectState) {
             let sql = "insert into Customer values (NULL, 0, 0, ?)" ;
             console.log("SQL: " + sql) ;

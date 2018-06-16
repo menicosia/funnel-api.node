@@ -84,26 +84,24 @@ class FunnelObj {
         }
     }
 
-    _addC_addCustomer(response, name, error, results, fields) {
-        this.fDB.addCustomer(response, name,
-                             this._addC_handleAddCustomer.bind(this)) ;
-    }
-
-    _addC_getCustomer(response, name, error, results, fields) {
+    _addC_handleGetCustomer(response, name, error, results, fields) {
         if (undefined === error || null !== error) {
             let response_string = "Error querying for customer: " + error ;
             console.log("__addC_getCustomer: " + response_string) ;
             response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
+        } else if (0 == results.length) {
+            // IMPORTANT, we move forward adding a customer IFF we got zero results
+            console.log("Calling fDB.addCustomer") ;
+            this.fDB.addCustomer(response, name, this._addC_handleAddCustomer.bind(this))
         } else {
-            let response_string = "Invalid request, customer already exists. " ;
-            console.log("_addC_getCustomer: "
-                        + response_string + JSON.stringify(results)) ;
+            let response_string = "Error adding, " + name + ", customer already exists."
+            console.log("__addC_getCustomer: " + response_string ) ;
             response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
         }
     }
     
     addCustomer(response, name) {
-        this.fDB.getCustomer(response, name, this._addC_getCustomer.bind(this)) ;
+        this.fDB.getCustomer(response, name, this._addC_handleGetCustomer.bind(this)) ;
     }
 
     // new evidence flow
