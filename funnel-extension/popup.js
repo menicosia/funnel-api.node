@@ -86,8 +86,6 @@ function updateSelect(data, element, key, value) {
     }
 }
 
-document.getElementById('refreshButton').addEventListener('click', getDBstatus);
-
-chrome.pageAction.onClicked.addListener( function () {
-    console.log("popup onclicked called") ;
-}) ;
+// document.addEventListener('DOMContentLoaded', function () {
+//     document.getElementById('refreshButton').addEventListener('click', getDBstatus);
+// }) ;
