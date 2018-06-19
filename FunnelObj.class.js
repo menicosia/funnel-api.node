@@ -33,6 +33,41 @@ class FunnelObj {
         this.fDB.getAllTags(response, this._handleGetAllTags.bind(this)) ;
     }
 
+    // new tag flow:
+    // get tag -> if null, create tag
+
+    _addC_handleAddTag(response, tagToAdd, error, results, fields) {
+        if (undefined === error || null !== error) {
+            let response_string = "Error adding, " + tag.name + ": " + error ;
+            console.log("_addC_handleAddTag: " + response_string) ;
+            response.end(JSON.stringify( [ Boolean(false), result_string ] )) ;
+        } else {
+            let response_string = JSON.stringify(results) ;
+            console.log("_addC_handleAddTag got results: " + response_string) ;
+            response.end(JSON.stringify(Boolean(true))) ;
+        }
+    }
+
+    _addC_handleGetTag(response, tagToAdd, error, results, fields) {
+        if (undefined === error || null !== error) {
+            let response_string = "Error querying for tag: " + error ;
+            console.log("__addC_getTag: " + response_string) ;
+            response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
+        } else if (0 == results.length) {
+            // IMPORTANT, we move forward adding a tag IFF we got zero results
+            console.log("Calling fDB.addTag") ;
+            this.fDB.addTag(response, tagToAdd, this._addC_handleAddTag.bind(this))
+        } else {
+            let response_string = "Error adding, " + name + ", tag already exists."
+            console.log("__addC_getTag: " + response_string ) ;
+            response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
+        }
+    }
+    
+    addTag(response, tagToAdd) {
+        this.fDB.getTag(response, tagToAdd, this._addC_handleGetTag.bind(this)) ;
+    }
+
     // Get All Customers
     
     _handleGetAllCustomers(response, error, results, fields) {

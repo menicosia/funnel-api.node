@@ -47,8 +47,11 @@
         <h2>Add Tag</h2>
         <table id="newTag">
           <form action="/json/addTag" method="put">
-            <tr><td><input type="text" name="tagName"></input></td>
-              <td><input type="submit"></input></td></tr>
+            <tr><td>Name</td>
+              <td><input type="text" name="tagName"></input></td></tr>
+            <tr><td>Desc</td>
+              <td><textarea rows="4" cols="20" name="tagDescription"></textarea></td></tr>
+            <tr><td colspan=2 style="text-align:right"><input type="submit"></input></td></tr>
           </form>
         </table>
       </div>

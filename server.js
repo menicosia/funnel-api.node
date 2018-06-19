@@ -19,6 +19,7 @@ var fs = require('fs') ;
 var bindMySQL = require('./bind-mysql.js') ;
 var FunnelDB = require('./FunnelDB.class.js') ;
 var FunnelObj = require('./FunnelObj.class.js') ;
+var Tag = require("./tagClass.js") ;
 
 // Variables
 var data = "" ;
@@ -77,10 +78,12 @@ function dispatchApi(funnelObj, request, response, method, query) {
         break ;
     case "addTag":
         console.log("Got query: " + JSON.stringify(query)) ;
-        if ("tagName" in query && "" !== query["tagName"]) {
-            funnelObj.addTag(response, query["tagName"]) ;
+        if ("tagName" in query && "tagDescription" in query
+            && "" !== query["tagName"] && "" !== query["tagDescription"]) {
+            let tagToAdd = new Tag(query["tagName"], query["tagDescription"]) ;
+            funnelObj.addTag(response, tagToAdd) ;
         } else {
-            let response_string = "Error, expected \'tagName\'"
+            let response_string = "[ERROR] Expected \'tagName\' and \'tagDescription\'"
             console.log(response_string) ;
             response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
         }

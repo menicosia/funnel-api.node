@@ -87,7 +87,7 @@ class FunnelDB {
 
     // Generic get & set methods
 
-    //
+    // Tags
     getAllTags(response, cb) {
         if (this.activateState && this.dbConnectState) {
             let sql = "select TagID,Name from Tags" ;
@@ -99,7 +99,34 @@ class FunnelDB {
         }
     }
 
-    // 
+    getTag(response, tag, cb) {
+        if (this.activateState && this.dbConnectState) {
+            let sql = "select * from Tags where Name LIKE ?" ;
+            console.log("SQL: " + sql + "\n... and Name: " + tag.name) ;
+            this.dbClient.query(sql, tag.name, (error, results, fields) => {
+                cb(response, tag, error, results, fields) ;
+            }) ;
+        } else {
+            console.log("Unable to satisfy getTag request; DB not ready") ;
+            cb(response, undefined) ;
+        }
+    }
+
+    addTag(response, tag, cb) {
+        console.log("fDB.addTag called") ;
+        if (this.activateState && this.dbConnectState) {
+            let sql = "insert into Tags values (NULL, ?, ?)" ;
+            console.log("SQL: " + sql) ;
+            this.dbClient.query(sql, [tag.name, tag.desc], (error, results, fields) => {
+                cb(response, tag, error, results, fields) ;
+            }) ;
+        } else {
+            console.log("Unable to satisfy addTag request; DB not ready") ;
+            cb(response, tag, undefined) ;
+        }
+    }
+
+    // Customers
     getAllCustomers(response, cb) {
         if (this.activateState && this.dbConnectState) {
             let sql = "select CustomerID,Name from Customer" ;
@@ -111,7 +138,6 @@ class FunnelDB {
         }
     }
 
-    // 
     getCustomer(response, name, cb) {
         if (this.activateState && this.dbConnectState) {
             let sql = "select * from Customer where Name LIKE ?" ;
@@ -125,7 +151,6 @@ class FunnelDB {
         }
     }
 
-    //
     addCustomer(response, name, cb) {
         console.log("fDB.addCustomer called") ;
         if (this.activateState && this.dbConnectState) {
@@ -140,7 +165,7 @@ class FunnelDB {
         }
     }
 
-    //
+    // Evidence
     newEvidence(response, customerID, tag, snippet, href, cb) {
         if (this.activateState && this.dbConnectState) {
             let sql = "insert into Evidence values (NULL, CURDATE(), ?, 0, ?, ?, ?)" ;
