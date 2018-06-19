@@ -90,7 +90,7 @@ class FunnelDB {
     // Tags
     getAllTags(response, cb) {
         if (this.activateState && this.dbConnectState) {
-            let sql = "select TagID,Name from Tags" ;
+            let sql = "select TagID,Name from Tags ORDER BY Name" ;
             console.log("SQL: " + sql) ;
             this.dbClient.query(sql, (error, results, fields) => {cb(response, error, results, fields)}) ;
         } else {
@@ -129,7 +129,7 @@ class FunnelDB {
     // Customers
     getAllCustomers(response, cb) {
         if (this.activateState && this.dbConnectState) {
-            let sql = "select CustomerID,Name from Customer" ;
+            let sql = "select CustomerID,Name from Customer ORDER BY Name" ;
             console.log("SQL: " + sql) ;
             this.dbClient.query(sql, (error, results, fields) => {cb(response, error, results, fields)}) ;
         } else {
