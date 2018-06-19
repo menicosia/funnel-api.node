@@ -15,9 +15,8 @@ var strftime = require('strftime') ;
 var time = require('time') ;
 var url = require('url') ;
 var util = require('util') ;
-// var mysql = require('mysql') ;
 var fs = require('fs') ;
-var bindMySQL = require('../bind-mysql/bind-mysql.js') ;
+var bindMySQL = require('./bind-mysql.js') ;
 var FunnelDB = require('./FunnelDB.class.js') ;
 var FunnelObj = require('./FunnelObj.class.js') ;
 
@@ -63,12 +62,28 @@ function dispatchApi(funnelObj, request, response, method, query) {
                                               query["href"]) ;
         } else {
             console.log("error") ;
-            request.end(JSON.stringify(Boolean(false))) ;
+            response.end(JSON.stringify(Boolean(false))) ;
         }
         break ;
     case "addCustomer":
         console.log("Got query: " + JSON.stringify(query)) ;
-        funnelObj.addCustomer(response, query["customer"]) ;
+        if ("customerName" in query && "" !== query["customerName"]) {
+            funnelObj.addCustomer(response, query["customerName"]) ;
+        } else {
+            let response_string = "Error, expected \'customerName\'"
+            console.log(response_string) ;
+            response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
+        }
+        break ;
+    case "addTag":
+        console.log("Got query: " + JSON.stringify(query)) ;
+        if ("tagName" in query && "" !== query["tagName"]) {
+            funnelObj.addTag(response, query["tagName"]) ;
+        } else {
+            let response_string = "Error, expected \'tagName\'"
+            console.log(response_string) ;
+            response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
+        }
         break ;
     case "getAllTags":
         funnelObj.getAllTags(response) ;
