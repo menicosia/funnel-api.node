@@ -1,19 +1,16 @@
 {
-    "name": "Funnel Evidence Extension",
-    "version": "1.0",
-    "description": "Add a context menu to send highlighted text to the Funnel API.",
+    "name": "Submit Funnel Evidence",
+    "version": "1.1",
+    "description": "Send highlighted text in a gDoc to the Funnel API.",
     "background": {
         "scripts": ["funnel-evidence.js"],
         "persistent": false
     },
     "permissions" : [
-        "tabs",
-        "declarativeContent",
-        "clipboardWrite",
         "activeTab"
     ],
     "content_scripts": [
-        { "all_frames": true,
+        {
           "js": ["googleDocsUtil.js", "receiver.js"],
           "matches": ["https://docs.google.com/document/*"],
           "run_at": "document_idle"
