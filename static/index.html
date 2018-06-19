@@ -1,33 +1,57 @@
 <html>
   <head>
-    <!-- base href="/" -->
-    <base href="http://localhost:8080/">
+    <base href="/">
+    <!-- base href="http://localhost:8080/" -->
     <title>New Customer Evidence</title>
-    <script src="file:///Users/pivotal/workspace/funnel-api.node/static/new-evidence.js"></script>
+    <script src="/new-evidence.js"></script>
     <link rel="stylesheet" href="tables.css">
+    <link rel="stylesheet" href="page.css">
   </head>
   <body>
-    <h1>New Customer Evidence</h1>
-    <table id="inputEvidence">
-      <tr><th>Customer</th>
-        <th>Tag</th>
-        <th>Date</th>
-        <th>Snippet</th>
-        <th>Source URL</th>
-        <th></th></tr>
-      <tbody id="formBody">
-        <tr>
-          <form action="/json/newEvidenceByCustomerID" method="put">
-            <td><select name="customerID" id="customerlist"></select></td>
-            <td><select name="tagID" id="taglist"></select></td>
-            <td><input type="text" size=20 name="date" id="href"></input></td>
-            <td><input type="text" size=60 name="snippet" id="snippet"></input></td>
-            <td><input type="text" size=45 name="href" id="href"></input></td>
-            <td><input type="submit"></input></td>
+    <div id="flex-box">
+      <div class="left-item">
+        <h1>New Customer Evidence</h1>
+        <table id="inputEvidence">
+          <tr><th>Customer</th>
+            <th>Tag</th>
+            <th>Date</th>
+            <th>Snippet</th>
+            <th>Source URL</th>
+            <th></th></tr>
+          <tbody id="formBody">
+            <tr>
+              <form action="/json/newEvidenceByCustomerID" method="put">
+                <td><select name="customerID" id="customerlist"></select></td>
+                <td><select name="tagID" id="taglist"></select></td>
+                <td><input type="text" size=11 name="date" id="href"></input></td>
+                <td><input type="text" size=50 name="snippet" id="snippet"></input></td>
+                <td><input type="text" size=30 name="href" id="href"></input></td>
+                <td><input type="submit"></input></td>
+              </form>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:12px">Current DB
+          status: <b><span id="dbstatus"></span></b></p>
+      </div>
+      <div class="right-item">
+        <h2>Add Customer</h2>
+        <table id="newCustomer">
+          <tr>
+            <form action="/json/addCustomer" method="put">
+              <td><input type="text" name="customerName"></input></td>
+              <td><input type="submit"></input></td>
+            </form>
+          </tr>
+        </table>
+        <h2>Add Tag</h2>
+        <table id="newTag">
+          <form action="/json/addTag" method="put">
+            <tr><td><input type="text" name="tagName"></input></td>
+              <td><input type="submit"></input></td></tr>
           </form>
-        </tr>
-      </tbody>
-    </table>
-    <p style="font-size:12px">Current DB status: <b><span id="dbstatus"></span></b></p>
+        </table>
+      </div>
+    </div>
   </body>
 </html>
