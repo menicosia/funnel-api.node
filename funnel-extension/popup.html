@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="http://funnel-api.cfapps.io/page.css">
   </head>
   <body>
-    <h1>New Customer Evidence</h1>
     <table id="inputEvidence">
+      <tr><th style="text-align: center;">New Funnel Evidence</th></tr>
       <tbody id="formBody">
         <form name="newEvidence"
               action="http://funnel-api.cfapps.io/json/newEvidenceByCustomerID"
@@ -19,13 +19,15 @@
               target="_blank">
           <tr><td><select name="customerID" id="customerlist"></select></td></tr>
           <tr><td><select name="tagID" id="taglist"></select></td></tr>
-          <tr><td><input type="text" size=11 name="date" id="href"></input></td></tr>
-          <tr><td><textarea rows="4" cols="30"
-                            name="snippet" id="snippet"></textarea></td></tr>
-          <tr><td><input type="text" size=30 name="href" id="href"></input></td></tr>
-          <tr><td><input type="submit" target="_blank" name="Submit"></td></tr>
+          <tr><td>Date: <input type="text" size=11 name="date" id="href"></input></td></tr>
+          <tr><td>Quote: <textarea rows="4" cols="30"
+                                   name="snippet" id="snippet"></textarea></td></tr>
+          <tr><td>Url: <input type="text" size=30 name="href" id="href"></input></td></tr>
+          <tr><td><input type="submit" target="_blank"
+                         name="Submit"></td></tr>
         </form>
-        </tr>
+        <!-- FIXME - this could be much slicker than _blank by following: -->
+        <!-- https://markb.co.uk/building-a-simple-google-chrome-extension.html -->
       </tbody>
     </table>
     <p style="font-size:12px">Current DB

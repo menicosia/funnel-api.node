@@ -86,6 +86,25 @@ function updateSelect(data, element, key, value) {
     }
 }
 
-// document.addEventListener('DOMContentLoaded', function () {
-//     document.getElementById('refreshButton').addEventListener('click', getDBstatus);
-// }) ;
+// ---
+// Code to pull in the highlighted segment
+
+function setChildTextNode(elementId, text) {
+  document.getElementById(elementId).innerText = text;
+}
+
+function displayHighlight() {
+    console.log("displaying highlight in popup...") ;
+    setChildTextNode("snippet", "loading...");
+
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        var tab = tabs[0];
+        chrome.tabs.sendMessage(tab.id, "popup", function handler(response) {
+            setChildTextNode("snippet", response);
+        }) ;
+    }) ;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('load', displayHighlight) ;
+}) ;
