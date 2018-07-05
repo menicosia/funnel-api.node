@@ -56,11 +56,12 @@ function dispatchApi(funnelObj, request, response, method, query) {
         console.log("Got query: " + JSON.stringify(query)) ;
         if ("customerID" in query
             && "tagID" in query
+            && "date" in query
             && "snippet" in query
             && "href" in query) {
             funnelObj.newEvidenceByCustomerID(response, query["customerID"],
-                                              query["tagID"], query["snippet"],
-                                              query["href"]) ;
+                                              query["date"], query["tagID"],
+                                              query["snippet"], query["href"]) ;
         } else {
             console.log("error") ;
             response.end(JSON.stringify(Boolean(false))) ;

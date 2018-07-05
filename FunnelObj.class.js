@@ -155,8 +155,8 @@ class FunnelObj {
         }
     }
     
-    newEvidenceByCustomerID(response, customerID, tag, snippet, href) {
-        this.fDB.newEvidence(response, customerID, tag, snippet, href,
+    newEvidenceByCustomerID(response, customerID, date, tag, snippet, href) {
+        this.fDB.newEvidence(response, customerID, date, tag, snippet, href,
                              this._handleNewEvidence.bind(this)) ;
     }
 }

@@ -166,11 +166,11 @@ class FunnelDB {
     }
 
     // Evidence
-    newEvidence(response, customerID, tag, snippet, href, cb) {
+    newEvidence(response, customerID, date, tag, snippet, href, cb) {
         if (this.activateState && this.dbConnectState) {
-            let sql = "insert into Evidence values (NULL, CURDATE(), ?, 0, ?, ?, ?)" ;
+            let sql = "insert into Evidence values (NULL, ?, ?, 0, ?, ?, ?)" ;
             console.log("SQL: " + sql) ;
-            this.dbClient.query(sql, [customerID, tag, snippet, href],
+            this.dbClient.query(sql, [date, customerID, tag, snippet, href],
                                 (error, results, fields) => {
                                     cb(response, customerID, error, results, fields) ;
                                 } ) ;
