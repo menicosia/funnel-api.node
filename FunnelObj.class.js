@@ -146,7 +146,7 @@ class FunnelObj {
 
     _handleNewEvidence(response, customerID, error, results, fields) {
         if (undefined === error || null !== error) {
-            let response_string = "Error adding new evidence: " + error ;
+            let response_string = "Error adding new evidence for customer " + customerID + ": " + error ;
             console.log("_handleNewEvidence: " + response_string) ;
             response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
         } else {
@@ -155,8 +155,8 @@ class FunnelObj {
         }
     }
     
-    newEvidenceByCustomerID(response, customerID, date, tag, snippet, href) {
-        this.fDB.newEvidence(response, customerID, date, tag, snippet, href,
+    newEvidenceByCustomerID(response, query) {
+        this.fDB.newEvidence(response, query,
                              this._handleNewEvidence.bind(this)) ;
     }
 }

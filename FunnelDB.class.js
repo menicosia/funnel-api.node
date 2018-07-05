@@ -166,13 +166,14 @@ class FunnelDB {
     }
 
     // Evidence
-    newEvidence(response, customerID, date, tag, snippet, href, cb) {
+    newEvidence(response, query, cb) {
         if (this.activateState && this.dbConnectState) {
             let sql = "insert into Evidence values (NULL, ?, ?, 0, ?, ?, ?)" ;
             console.log("SQL: " + sql) ;
-            this.dbClient.query(sql, [date, customerID, tag, snippet, href],
+            this.dbClient.query(sql, [query["date"], query["customerID"],
+                                      query["tagID"], query["snippet"], query["href"]],
                                 (error, results, fields) => {
-                                    cb(response, customerID, error, results, fields) ;
+                                    cb(response, query["customerID"], error, results, fields) ;
                                 } ) ;
         } else {
             console.log("Unable to satisfy newEvidence request; DB not ready") ;
