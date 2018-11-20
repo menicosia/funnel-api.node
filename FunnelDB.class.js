@@ -23,7 +23,7 @@ class FunnelDB {
     }
 
     _handleDBConnect(err) {
-        if (err) { _handleDBError(err); }
+        if (err) { this._handleDBError(err); }
         else {
             this.dbClient.on('error', (err) => this._handleDBError(err) ) ;
             this.dbConnectState = true ;
