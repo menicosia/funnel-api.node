@@ -122,6 +122,7 @@ function requestHandler(funnelObj, request, response) {
     switch (rootCall) {
     case "env":
 	      if (process.env) {
+            var v ;
 	          data += "<p>" ;
 
 		        for (v in process.env) {
