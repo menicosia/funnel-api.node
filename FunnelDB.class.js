@@ -8,7 +8,7 @@ class FunnelDB {
         this.activateState = activateState ;
         this.dbClient = undefined ;
         this.dbConnectState = undefined ;
-        this.dbConnectTimer = undefined ; 
+        this.dbConnectTimer = undefined ;
     }
     
     // Connection logic
@@ -43,7 +43,18 @@ class FunnelDB {
             console.log("MySLQConnect called, but already connected to DB. Skipping.") ;
         }
         else if (this.activateState) {
-            this.dbClient = mysql.createConnection( this.mysql_creds ) ;
+            var clientConfig = {
+                host : this.mysql_creds["host"],
+                user : this.mysql_creds["user"],
+                password : this.mysql_creds["password"],
+                port : this.mysql_creds["port"],
+                database : this.mysql_creds["database"]
+            } ;
+            if (this.mysql_creds["ca_certificate"]) {
+                console.log("CA Cert detected; using TLS");
+                clientConfig["ssl"] = { ca : this.mysql_creds["ca_certificate"] } ;
+            }
+            this.dbClient = mysql.createConnection( clientConfig ) ;
             this.dbClient.connect(this._handleDBConnect.bind(this)) ;
         } else {
             console.log("ActivateState not true, aborting...") ;
@@ -78,8 +89,10 @@ class FunnelDB {
         if (this.dbConnectState) {
             this.dbClient.query("SHOW STATUS LIKE 'Ssl_version'",
                            function (err, results, fields) {
-                               response.end(JSON.stringify(results[0]["Value"])) ;
-                           }) ;
+                               response.end(JSON.stringify( {
+                                   "dbStatus": this.dbConnectState,
+                                   "tls-cipher": results[0]["Value"] } )) ;
+                           }.bind(this)) ;
         } else {
             response.end("[ERROR] No connection to database.") ;
         }
