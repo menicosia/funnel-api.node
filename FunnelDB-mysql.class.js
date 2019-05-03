@@ -18,14 +18,14 @@ class FunnelDB {
         if (err) {
             console.warn("Issue with database, " + err.code
                          + ". Attempting to reconnect every 1 second.")
-            this.dbConnectTimer = setTimeout(this.MySQLConnect.bind(this), 1000) ;
+            this.dbConnectTimer = setTimeout(this.Connect.bind(this), 1000) ;
         }
     }
 
-    _handleDBConnect(err) {
+    _handleDBConnect(err, cb) {
         if (err) { this._handleDBError(err); }
         else {
-            this.dbClient.on('error', (err) => this._handleDBError(err) ) ;
+            this.dbClient.on('error', (err) => { this._handleDBError(err) } ) ;
             this.dbConnectState = true ;
             // stop trying to reconnect
             if (this.dbConnectTimer) {
@@ -33,14 +33,15 @@ class FunnelDB {
                 this.dbConnectTimer = undefined ;
             }
             console.log("Connected to database.") ;
+            cb(true) ;
         }
     }
     
-    MySQLConnect() {
+    Connect(cb) {
         // console.log("ActivateState: " + this.activateState) ;
         // console.log("mysql_creds: " + Object.keys(this.mysql_creds)) ;
         if (this.dbConnectState) {
-            console.log("MySLQConnect called, but already connected to DB. Skipping.") ;
+            console.log("Connect called, but already connected to MySQL. Skipping.") ;
         }
         else if (this.activateState) {
             var clientConfig = {
@@ -55,21 +56,77 @@ class FunnelDB {
                 clientConfig["ssl"] = { ca : this.mysql_creds["ca_certificate"] } ;
             }
             this.dbClient = mysql.createConnection( clientConfig ) ;
-            this.dbClient.connect(this._handleDBConnect.bind(this)) ;
+            // FIXME: BET - I can call _handleDBConnect without .bind(this)
+            this.dbClient.connect((error) => { this._handleDBConnect(error, cb)} );
         } else {
             console.log("ActivateState not true, aborting...") ;
             this.dbClient = undefined ;
         }
     }
 
+    // Schema setup logic
+
+    _handleSetupSchema(err, results, fields, cb) {
+        if (null != err) {
+            console.error("[ERROR] Unable to setup schema. Error: " + err) ;
+        } else {
+            console.log("Schema setup OK.") ;
+            // FIXME: Don't hardcode schema number; it should be passed in
+            // FIXME: Last query should be: UPDATE _Schema_Version SET version = X
+            cb(1) ;
+        }
+    }
+
+    _setupSchema(cb) {
+        console.log("Setting up schema...") ;
+        // FIXME: This should be some JSON meta-schema, parsed into a big query
+        this.dbClient.query("create table _Schema_Version (version int)",
+                            (error, results, fields)
+                            => {this.handleSetupSchema(error, results, fields, cb)}
+                            ) ;
+    }
+
+    _handleSchemaVer(err, results, fields, cb) {
+        if (null != err) {
+            console.error("[ERROR] Unable to check schema version. Error: " + err) ;
+            process.exit(1) ;
+        } else if (0 == results.length) {
+            // This really should never happen?
+            this._setupSchema(cb) ;
+        } else {
+            cb(results[0]["version"]) ;
+        }
+    }
+
+    _handleSchemaP(err, results, fields, cb) {
+        if (null != err) {
+            console.error("[ERROR] Unable to check schema version. Error: " + err) ;
+            process.exit(1) ;
+        } else if (0 == results.length) {
+            this._setupSchema(cb) ;
+        } else {
+            this.dbClient.query("select version from _Schema_Version",
+                                (error, results, fields)
+                                => {this._handleSchemaVer(error, results, fields, cb)}
+                                ) ;
+        }
+    }
+
+    checkSchemaVersion(cb) {
+        this.dbClient.query("show tables LIKE '_Schema_Version'",
+                            (error, results, fields)
+                            => { this._handleSchemaP(error, results, fields, cb) }
+                            ) ;
+    }
+
     // Status and Ping
 
     _handleDBPing(response, err) {
         if (err) {
-            console.log("MySQL Connection error: " + err) ;
+            console.log("MySQL connection error: " + err) ;
             response.end("MySQL connection error: " + err) ;
             this.dbClient.destroy() ;
-            this.MySQLConnect() ;
+            this.Connect() ;
         } else {
             response.end("MySQL ping successful.") ;
         }
