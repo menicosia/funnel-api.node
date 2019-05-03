@@ -3,7 +3,15 @@
 class FunnelObj {
     constructor(fDB) {
         this.fDB = fDB ;
-        this.fDB.MySQLConnect() ;
+        this.fDB.Connect(this._handleDBConnect.bind(this)) ;
+    }
+
+    _handleSchemaVersion(version) {
+        console.log("Schema version is: " + version) ;
+    }
+
+    _handleDBConnect() {
+        this.fDB.checkSchemaVersion(this._handleSchemaVersion.bind(this)) ;
     }
 
     // pass through to FunnelDB implementation
