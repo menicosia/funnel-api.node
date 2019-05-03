@@ -6,6 +6,8 @@ class FunnelObj {
         this.fDB.Connect(this._handleDBConnect.bind(this)) ;
     }
 
+    // Check schema version after making connection
+
     _handleSchemaVersion(version) {
         console.log("Schema version is: " + version) ;
     }
