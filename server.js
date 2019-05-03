@@ -17,7 +17,7 @@ var url = require('url') ;
 var util = require('util') ;
 var fs = require('fs') ;
 var bindMySQL = require('./bind-mysql.js') ;
-var FunnelDB = require('./FunnelDB.class.js') ;
+var FunnelDB = require('./FunnelDB-mysql.class.js') ;
 var FunnelObj = require('./FunnelObj.class.js') ;
 var Tag = require("./tagClass.js") ;
 
