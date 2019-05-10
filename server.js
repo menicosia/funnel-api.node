@@ -11,8 +11,6 @@
 var finalhandler = require('finalhandler') ;
 var http = require('http') ;
 var serveStatic = require('serve-static') ;
-var strftime = require('strftime') ;
-var time = require('time') ;
 var url = require('url') ;
 var util = require('util') ;
 var fs = require('fs') ;
