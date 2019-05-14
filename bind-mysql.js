@@ -12,7 +12,7 @@ module.exports.getMySQLCreds = function(service) {
         service = "local" ;
         mysql_creds["host"] = "localhost" ;
         mysql_creds["user"] = "root" ;
-        mysql_creds["password"] = "password" ;
+        mysql_creds["password"] = "hotstuff" ;
         mysql_creds["database"] = "service_instance_db" ;
         mysql_creds["ca_certificate"] = undefined ;
         return(mysql_creds) ;

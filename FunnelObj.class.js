@@ -7,7 +7,7 @@ class FunnelObj {
     }
 
     // pass through to FunnelDB implementation
-    
+
     dbConnectState(response) {
         console.log("dbstatus returning: " + this.fDB.dbConnectState) ;
         response.end(JSON.stringify(this.fDB.dbConnectState)) ;
@@ -16,7 +16,7 @@ class FunnelObj {
     doPing(response) { this.fDB.doPing(response) }
 
     // Get All Tags
-    
+
     _handleGetAllTags(response, error, results, fields) {
         if (undefined === error || null !== error ) {
             let response_string = "Error querying for all customers: " + error ;
@@ -28,7 +28,7 @@ class FunnelObj {
             response.end(response_string) ;
         }
     }
-    
+
     getAllTags(response) {
         this.fDB.getAllTags(response, this._handleGetAllTags.bind(this)) ;
     }
@@ -63,13 +63,13 @@ class FunnelObj {
             response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
         }
     }
-    
+
     addTag(response, tagToAdd) {
         this.fDB.getTag(response, tagToAdd, this._addC_handleGetTag.bind(this)) ;
     }
 
     // Get All Customers
-    
+
     _handleGetAllCustomers(response, error, results, fields) {
         if (undefined === error || null !== error ) {
             let response_string = "Error querying for all customers: " + error ;
@@ -81,13 +81,13 @@ class FunnelObj {
             response.end(response_string) ;
         }
     }
-    
+
     getAllCustomers(response) {
         this.fDB.getAllCustomers(response, this._handleGetAllCustomers.bind(this)) ;
     }
 
     // Get One Customer
-    
+
     _handleGetCustomer(response, name, error, results, fields) {
         if (undefined === error || null !== error) {
             let response_string = "Error querying for a single customer: " + error ;
@@ -95,15 +95,31 @@ class FunnelObj {
             response.end(JSON.stringify(response_string)) ;
         } else {
             let response_string = JSON.stringify(results) ;
-            console.log("getCustomer got results: " + results)
+            console.log("getCustomer got results: " + results) ;
             response.end(response_string) ;
         }
     }
-            
+
     getCustomer(response, name) {
         this.fDB.getCustomer(response, name, this._handleGetCustomer.bind(this)) ;
     }
-    
+
+    _handleReadTable(response, name, error, results, fields) {
+        if (undefined === error || null !== error) {
+            let response_string = "Error reading table: " + error ;
+            console.log("_readTable_cb: " + response_string) ;
+            response.end(JSON.stringify(response_string)) ;
+        } else {
+            let response_string = JSON.stringify(results) ;
+            console.log("readTable got results: " + results) ;
+            response.end(response_string) ;
+        }
+    }
+
+    readTable(response, name) {
+        this.fDB.readTable(response, name, this._handleReadTable.bind(this)) ;
+    }
+
     // new customer flow:
     // get customer -> if null, create customer
 
@@ -134,13 +150,13 @@ class FunnelObj {
             response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
         }
     }
-    
+
     addCustomer(response, name) {
         this.fDB.getCustomer(response, name, this._addC_handleGetCustomer.bind(this)) ;
     }
 
     // new evidence flow
-    // 
+    //
     // let's just do something simple for now, no edge-checking of inputs
     // don't interpret customer or label; just blindly insert the values
 
@@ -154,7 +170,7 @@ class FunnelObj {
             response.end(JSON.stringify(Boolean(true))) ;
         }
     }
-    
+
     newEvidenceByCustomerID(response, query) {
         this.fDB.newEvidence(response, query,
                              this._handleNewEvidence.bind(this)) ;
@@ -162,4 +178,3 @@ class FunnelObj {
 }
 
 module.exports = FunnelObj ;
-

@@ -10,7 +10,7 @@ class FunnelDB {
         this.dbConnectState = undefined ;
         this.dbConnectTimer = undefined ;
     }
-    
+
     // Connection logic
 
     _handleDBError(err) {
@@ -35,12 +35,12 @@ class FunnelDB {
             console.log("Connected to database.") ;
         }
     }
-    
+
     MySQLConnect() {
         // console.log("ActivateState: " + this.activateState) ;
         // console.log("mysql_creds: " + Object.keys(this.mysql_creds)) ;
         if (this.dbConnectState) {
-            console.log("MySLQConnect called, but already connected to DB. Skipping.") ;
+            console.log("MySQLConnect called, but already connected to DB. Skipping.") ;
         }
         else if (this.activateState) {
             var clientConfig = {
@@ -162,6 +162,19 @@ class FunnelDB {
             console.log("Unable to satisfy getCustomer request; DB not ready") ;
             cb(response, undefined) ;
         }
+    }
+
+    readTable(response, name, cb) {
+      if (this.activateState && this.dbConnectState) {
+          let sql = "select * FROM " + name ;
+          console.log("SQL: " + sql) ;
+          this.dbClient.query(sql, (error, results, fields) => {
+              cb(response, name, error, results, fields) ;
+          }) ;
+      } else {
+          console.log("Unable to satisfy readTable request; DB not ready") ;
+          cb(response, undefined) ;
+      }
     }
 
     addCustomer(response, name, cb) {

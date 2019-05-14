@@ -88,8 +88,9 @@ function dispatchApi(funnelObj, request, response, method, query) {
         }
         break ;
     case "getAllTags":
-        funnelObj.getAllTags(response) ;
-        break ;
+        funnelObj.readTable(response, "Tags") ;
+        // funnelObj.getAllTags(response) ;
+        // break ;
     case "getAllCustomers":
         funnelObj.getAllCustomers(response) ;
         break ;
@@ -98,19 +99,22 @@ function dispatchApi(funnelObj, request, response, method, query) {
         funnelObj.getCustomer(response, query["customer"]) ;
         break ;
     case "read":
-        if (query["table"]) {
-            console.log("Received request to read table: " + query["table"]) ;
-            readTable(request, response, query["table"], sql2json) ;
-        } else {
-            response.end("ERROR: Usage: /json/read?table=name"
-                         + " (request: " + request.url + ")") ;
-        }
+        console.log("Got query: " + JSON.stringify(query)) ;
+        funnelObj.readTable(response, query["table"]) ;
+        // if (query["table"]) {
+        //     console.log("Received request to read table: " + query["table"]) ;
+        //     // FIXME: wtf is readTable
+        //     readTable(request, response, query["table"], sql2json) ;
+        // } else {
+        //     response.end("ERROR: Usage: /json/read?table=name"
+        //                  + " (request: " + request.url + ")") ;
+        // }
         break ;
     default:
         response.writeHead(404) ;
         response.end(JSON.stringify(Boolean(false))) ;
     }
-    
+
 }
 
 function requestHandler(funnelObj, request, response) {
