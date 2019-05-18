@@ -1,0 +1,24 @@
+[
+    {
+        "Version" : 1,
+        "ADD" : {
+            "Customer" : "(CustomerID int AUTO_INCREMENT primary key, StateID int, Churn tinyint, Name VARCHAR(255))",
+            "Evidence" : "(EvidenceID int AUTO_INCREMENT primary key, Date date, CustomerID int, StateID int, TagID int, Content text, Source VARCHAR(2083))",
+            "State" : "(StateID int AUTO_INCREMENT primary key, Name text)",
+            "Tags": "(TagID int AUTO_INCREMENT primary key, Name VARCHAR(50), Description VARCHAR(255))",
+            "_Schema_Version": "(version int)"
+        },
+        "DROP" : [],
+        "ALTER" : {}
+    },
+    {
+        "Version" : 2,
+        "DROP" : ["Tags"]
+    },
+    {
+        "Version" : 3,
+        "ALTER" : {
+            "State" : "MODIFY Name VARCHAR(50)"
+        }
+    }
+]
