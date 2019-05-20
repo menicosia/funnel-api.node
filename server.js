@@ -76,6 +76,7 @@ function dispatchApi(funnelObj, request, response, method, query) {
         }
         break ;
     case "addTag":
+        // FIXME: SCHEMA-V2
         console.log("Got query: " + JSON.stringify(query)) ;
         if ("tagName" in query && "tagDescription" in query
             && "" !== query["tagName"] && "" !== query["tagDescription"]) {
@@ -87,10 +88,27 @@ function dispatchApi(funnelObj, request, response, method, query) {
             response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
         }
         break ;
+    case "addOutcome":
+        console.log("Got query: " + JSON.stringify(query)) ;
+        if ("outcomeName" in query
+            && "outcomeDescription" in query
+            && "" !== query["outcomeName"]
+            && "" !== query["outcomeDescription"]) {
+            funnelObj.addOutcome(response, query) ;
+        } else {
+            let response_string = "[ERROR] Expected \'outcomeName\' and \'outcomeDescription\'"
+            console.log(response_string) ;
+            response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
+        }
+        break ;
+    case "getAllOutcomes":
+        break ;
+    case "getOutcome":
+        break ;
     case "getAllTags":
-        funnelObj.readTable(response, "Tags") ;
-        // funnelObj.getAllTags(response) ;
-        // break ;
+        // funnelObj.readTable(response, "Tags") ;
+        funnelObj.getAllTags(response) ;
+        break ;
     case "getAllCustomers":
         funnelObj.getAllCustomers(response) ;
         break ;
@@ -103,7 +121,6 @@ function dispatchApi(funnelObj, request, response, method, query) {
         funnelObj.readTable(response, query["table"]) ;
         // if (query["table"]) {
         //     console.log("Received request to read table: " + query["table"]) ;
-        //     // FIXME: wtf is readTable
         //     readTable(request, response, query["table"], sql2json) ;
         // } else {
         //     response.end("ERROR: Usage: /json/read?table=name"

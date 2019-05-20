@@ -194,10 +194,12 @@ class FunnelDB {
     // Evidence
     newEvidence(response, query, cb) {
         if (this.activateState && this.dbConnectState) {
-            let sql = "insert into Evidence values (NULL, ?, ?, 0, ?, ?, ?)" ;
+            let sql = "insert into Evidence values (NULL, ?, ?, 0, ?, ?, ?, ?, ?)" ;
             console.log("SQL: " + sql) ;
             this.dbClient.query(sql, [query["date"], query["customerID"],
-                                      query["tagID"], query["snippet"], query["href"]],
+                                      query["tagID"], query["snippet"], query["href"],
+                                      "isEpic" in query ? query["isEpic"] : "0",
+                                      "usesFeature" in query ? query["usesFeature"] : "0"],
                                 (error, results, fields) => {
                                     cb(response, query["customerID"], error, results, fields) ;
                                 } ) ;
@@ -205,6 +207,22 @@ class FunnelDB {
             console.log("Unable to satisfy newEvidence request; DB not ready") ;
             cb(response, customerID, undefined) ;
         }
+    }
+
+    // Outcome
+    newOutcome(response, query, cb) {
+      if (this.activateState && this.dbConnectState) {
+          let sql = "insert into Outcomes values (NULL, ?, ?)" ;
+          console.log("SQL: " + sql) ;
+          this.dbClient.query(sql, [query["outcomeName"],
+                                    query["outcomeDescription"]],
+                              (error, results, fields) => {
+                                  cb(response, query["outcomeName"], error, results, fields) ;
+                              } ) ;
+      } else {
+          console.log("Unable to satisfy addOutcome request; DB not ready") ;
+          cb(response, tag, undefined) ;
+      }
     }
 }
 

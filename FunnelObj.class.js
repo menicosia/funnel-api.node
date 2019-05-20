@@ -175,6 +175,23 @@ class FunnelObj {
         this.fDB.newEvidence(response, query,
                              this._handleNewEvidence.bind(this)) ;
     }
+
+    _handleNewOutcome(response, name, error, results, fields) {
+        if (undefined === error || null !== error) {
+            let response_string = "Error adding, " + name + ": " + error ;
+            console.log("_handleAddOutcome: " + response_string) ;
+            response.end(JSON.stringify( [ Boolean(false), result_string ] )) ;
+        } else {
+            let response_string = JSON.stringify(results) ;
+            console.log("_handleAddOutcome got results: " + response_string) ;
+            response.end(JSON.stringify(Boolean(true))) ;
+        }
+    }
+
+    addOutcome(response, query) {
+        this.fDB.newOutcome(response, query,
+                            this._handleNewOutcome.bind(this)) ;
+    }
 }
 
 module.exports = FunnelObj ;
