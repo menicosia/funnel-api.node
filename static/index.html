@@ -8,53 +8,77 @@
     <link rel="stylesheet" href="page.css">
   </head>
   <body>
-    <div id="flex-box">
-      <div class="left-item">
-        <h1>New Customer Evidence</h1>
-        <table id="inputEvidence">
-          <tr><th>Customer</th>
-            <th>Tag</th>
-            <th>Date</th>
-            <th>Snippet</th>
-            <th>Source URL</th>
-            <th></th></tr>
-          <tbody id="formBody">
+    <h1>Funnel API</h1>
+    <p style="font-size:12px">Current DB
+      status: <b><span id="dbstatus"></span></b></p>
+    <div class="col-xl">
+      <h2>New Customer Evidence</h2>
+      <table id="inputEvidence">
+        <tr><th>Customer</th>
+          <th>Tag</th>
+          <th>Date</th>
+          <th>Snippet</th>
+          <th>Source URL</th>
+          <th>Epic</th>
+          <th>Proof of Feature Adoption</th></tr>
+        <tbody id="formBody">
+          <form action="/json/newEvidenceByCustomerID" method="put">
             <tr>
-              <form action="/json/newEvidenceByCustomerID" method="put">
-                <td><select name="customerID" id="customerlist"></select></td>
-                <td><select name="tagID" id="taglist"></select></td>
-                <td><input type="text" size=11 name="date" id="href"></input></td>
-                <td><input type="text" size=50 name="snippet" id="snippet"></input></td>
-                <td><input type="text" size=30 name="href" id="href"></input></td>
-                <td><input type="submit"></input></td>
-              </form>
+              <td><select name="customerID" id="customerlist"></select></td>
+              <td><select name="tagID" id="taglist"></select></td>
+              <td><input type="text" name="date" id="href"></input></td>
+              <td><input type="text" name="snippet" id="snippet"></input></td>
+              <td><input type="text" name="href" id="href"></input></td>
+              <td><input type="checkbox" name="isEpic" id="isEpic" value="1"></td>
+              <td><input type="checkbox" name="usesFeature" id="usesFeature" value="1"></td>
             </tr>
-          </tbody>
-        </table>
-        <p style="font-size:12px">Current DB
-          status: <b><span id="dbstatus"></span></b></p>
-      </div>
-      <div class="right-item">
-        <h2>Add Customer</h2>
-        <table id="newCustomer">
-          <tr>
-            <form action="/json/addCustomer" method="put">
-              <td><input type="text" name="customerName"></input></td>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
               <td><input type="submit"></input></td>
-            </form>
-          </tr>
-        </table>
-        <h2>Add Tag</h2>
-        <table id="newTag">
-          <form action="/json/addTag" method="put">
-            <tr><td>Name</td>
-              <td><input type="text" name="tagName"></input></td></tr>
-            <tr><td>Desc</td>
-              <td><textarea rows="4" cols="20" name="tagDescription"></textarea></td></tr>
-            <tr><td colspan=2 style="text-align:right"><input type="submit"></input></td></tr>
+            </tr>
           </form>
-        </table>
-      </div>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-sm">
+      <h2>Add Customer</h2>
+      <table id="newCustomer">
+        <tr><td>Name</td>
+          <form action="/json/addCustomer" method="put">
+            <td><input type="text" name="customerName"></input></td></tr>
+            <tr><td colspan=2><input type="submit"></input></td></tr>
+          </form>
+        </tr>
+      </table>
+    </div>
+    <div class="col-sm">
+      <h2>Add Tag</h2>
+      <table id="newTag">
+        <form action="/json/addTag" method="put">
+          <tr><td>Name</td>
+            <td><input type="text" name="tagName"></input></td></tr>
+          <tr><td>Desc</td>
+            <td><textarea rows="4" name="tagDescription"></textarea></td></tr>
+          <tr><td colspan=2><input type="submit"></input></td></tr>
+        </form>
+      </table>
+    </div>
+    <div class="col-sm">
+      <h2>Add Outcome</h2>
+      <table id="newOutcome">
+        <form action="/json/addOutcome" method="put">
+          <tr><td>Name</td>
+            <td><input type="text" name="outcomeName"></input></td></tr>
+          <tr><td>Desc</td>
+            <td><textarea rows="4" name="outcomeDescription"></textarea></td></tr>
+          <tr><td colspan=2 style="text-align:right"><input type="submit"></input></td></tr>
+        </form>
+      </table>
     </div>
   </body>
 </html>

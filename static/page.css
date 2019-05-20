@@ -1,16 +1,28 @@
-#flex-box {
-    float: left ;
-    padding: 5px ;
-    width: 100% ;
+* {
+  box-sizing: border-box;
 }
 
-.left-item {
-    float: left ;
-    width: 70% ;
-    padding: 5px ;
+.col-sm, .col-md, .col-lg, .col-xl {
+  min-width: 300px ;
+  height: 200px ;
+  float: left ;
+  padding: 5px ;
+  overflow: auto ;
 }
-.right-item {
-    float: left ;
-    width: 20% ;
-    padding: 5px ;
+
+.col-sm {
+  width: 25% ;
+
+}
+
+.col-md {
+  width: 50% ;
+}
+
+.col-lg {
+  width: 75% ;
+}
+
+.col-xl {
+  width: 100%;
 }
