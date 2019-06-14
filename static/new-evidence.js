@@ -18,6 +18,7 @@ function getDBstatus() {
             displayDBstatus() ;
             populateSelect("customers") ;
             populateSelect("tags") ;
+            populateSelect("outcomes") ;
         }
     } ;
     request.open("GET", url) ;
@@ -37,20 +38,26 @@ function populateSelect(what) {
     let value = undefined ;
     console.log("populate called on: " + what) ;
     switch(what) {
-    case "customers":
-        requestUrl = url + "getAllCustomers" ;
-        selectElement = "customerlist" ;
-        key = "Name" ;
-        value = "CustomerID" ;
-        break ;
-    case "tags":
-        requestUrl = url + "getAllTags" ;
-        selectElement = "taglist" ;
-        key = "Name" ;
-        value = "TagID" ;
-        break ;
+      case "customers":
+          requestUrl = url + "getAllCustomers" ;
+          selectElement = "customerlist" ;
+          key = "Name" ;
+          value = "CustomerID" ;
+          break ;
+      case "tags":
+          requestUrl = url + "getAllTags" ;
+          selectElement = "taglist" ;
+          key = "Name" ;
+          value = "TagID" ;
+          break ;
+      case "outcomes":
+          requestUrl = url + "getAllOutcomes" ;
+          selectElement = "outcomelist" ;
+          key = "Name" ;
+          value = "OutcomeID" ;
+          break ;
     }
-    
+
     if (dbStatus) {
         var request = new XMLHttpRequest() ;
         request.onload = function () {
@@ -71,7 +78,6 @@ function populateSelect(what) {
 }
 
 function updateSelect(data, element, key, value) {
-    var item ;
     let thisElement = document.getElementById(element) ;
     for (i = 0 ; i < data.length ; i++) {
         // var newOpt = document.createElement("option", { is : "foobar" }) ;

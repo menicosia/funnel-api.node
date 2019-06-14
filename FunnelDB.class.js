@@ -103,7 +103,7 @@ class FunnelDB {
     // Tags
     getAllTags(response, cb) {
         if (this.activateState && this.dbConnectState) {
-            let sql = "select TagID,Name from Tags ORDER BY Name" ;
+            let sql = "select TagID,Name,isEpic from Tags ORDER BY Name" ;
             console.log("SQL: " + sql) ;
             this.dbClient.query(sql, (error, results, fields) => {cb(response, error, results, fields)}) ;
         } else {
@@ -112,12 +112,12 @@ class FunnelDB {
         }
     }
 
-    getTag(response, tag, cb) {
+    getTag(response, query, tag, cb) {
         if (this.activateState && this.dbConnectState) {
             let sql = "select * from Tags where Name LIKE ?" ;
             console.log("SQL: " + sql + "\n... and Name: " + tag.name) ;
             this.dbClient.query(sql, tag.name, (error, results, fields) => {
-                cb(response, tag, error, results, fields) ;
+                cb(response, query, tag, error, results, fields) ;
             }) ;
         } else {
             console.log("Unable to satisfy getTag request; DB not ready") ;
@@ -125,18 +125,32 @@ class FunnelDB {
         }
     }
 
-    addTag(response, tag, cb) {
+    addTag(response, query, tag, cb) {
         console.log("fDB.addTag called") ;
         if (this.activateState && this.dbConnectState) {
-            let sql = "insert into Tags values (NULL, ?, ?)" ;
+            let sql = "insert into Tags values (NULL, ?, ?, ?)" ;
             console.log("SQL: " + sql) ;
-            this.dbClient.query(sql, [tag.name, tag.desc], (error, results, fields) => {
-                cb(response, tag, error, results, fields) ;
+            this.dbClient.query(sql, [tag.name, tag.desc, tag.isEpic], (error, results, fields) => {
+                cb(response, query, tag, error, results, fields) ;
             }) ;
         } else {
             console.log("Unable to satisfy addTag request; DB not ready") ;
-            cb(response, tag, undefined) ;
+            cb(response, query, tag, undefined) ;
         }
+    }
+
+    newOutcomeTagAssignment(response, query, tag, cb) {
+      console.log("fDB.newOutcomeTagAssignment called") ;
+      if (this.activateState && this.dbConnectState) {
+          let sql = "insert into Tag_Br_Outcome values ((select TagID from Tags where Name like ?), ?)" ;
+          console.log("SQL: " + sql) ;
+          this.dbClient.query(sql, [query["tagName"], query["outcomeID"]], (error, results, fields) => {
+              cb(response, query, tag, error, results, fields) ;
+          }) ;
+      } else {
+          console.log("Unable to satisfy newOutcomeTagAssignment request; DB not ready") ;
+          cb(response, query, tag, undefined) ;
+      }
     }
 
     // Customers
@@ -194,11 +208,14 @@ class FunnelDB {
     // Evidence
     newEvidence(response, query, cb) {
         if (this.activateState && this.dbConnectState) {
-            let sql = "insert into Evidence values (NULL, ?, ?, 0, ?, ?, ?, ?, ?)" ;
+            let sql = "insert into Evidence values (NULL, ?, ?, ?, 0, ?, ?, ?, ?)" ;
             console.log("SQL: " + sql) ;
-            this.dbClient.query(sql, [query["date"], query["customerID"],
-                                      query["tagID"], query["snippet"], query["href"],
-                                      "isEpic" in query ? query["isEpic"] : "0",
+            this.dbClient.query(sql, [query["date"],
+                                      query["customerID"],
+                                      query["product"],
+                                      query["tagID"],
+                                      query["snippet"],
+                                      query["href"],
                                       "usesFeature" in query ? query["usesFeature"] : "0"],
                                 (error, results, fields) => {
                                     cb(response, query["customerID"], error, results, fields) ;
@@ -212,7 +229,7 @@ class FunnelDB {
     // Outcome
     newOutcome(response, query, cb) {
       if (this.activateState && this.dbConnectState) {
-          let sql = "insert into Outcomes values (NULL, ?, ?)" ;
+          let sql = "insert into Outcome values (NULL, ?, ?)" ;
           console.log("SQL: " + sql) ;
           this.dbClient.query(sql, [query["outcomeName"],
                                     query["outcomeDescription"]],
@@ -223,6 +240,17 @@ class FunnelDB {
           console.log("Unable to satisfy addOutcome request; DB not ready") ;
           cb(response, tag, undefined) ;
       }
+    }
+
+    getAllOutcomes(response, cb) {
+        if (this.activateState && this.dbConnectState) {
+            let sql = "select OutcomeID,Name from Outcome ORDER BY Name" ;
+            console.log("SQL: " + sql) ;
+            this.dbClient.query(sql, (error, results, fields) => {cb(response, error, results, fields)}) ;
+        } else {
+            console.log("Unable to satisfy getAllOutcomes request; DB not ready") ;
+            cb(response, undefined) ;
+        }
     }
 }
 

@@ -36,36 +36,54 @@ class FunnelObj {
     // new tag flow:
     // get tag -> if null, create tag
 
-    _addC_handleAddTag(response, tagToAdd, error, results, fields) {
+    _addC_handleAssignOutcomeToTag(response, query, tagToAdd, error, results, fields) {
         if (undefined === error || null !== error) {
-            let response_string = "Error adding, " + tag.name + ": " + error ;
-            console.log("_addC_handleAddTag: " + response_string) ;
-            response.end(JSON.stringify( [ Boolean(false), result_string ] )) ;
+            let response_string = "Error assigning, " + query["tagName"]
+                                  + " to Outcome " + query["outcomeID"]
+                                  + ": " + error ;
+            console.log("_addC_handleAssignOutcomeToTag: " + response_string) ;
+            response.end(JSON.stringify([ Boolean(false), response_string ])) ;
         } else {
-            let response_string = JSON.stringify(results) ;
-            console.log("_addC_handleAddTag got results: " + response_string) ;
-            response.end(JSON.stringify(Boolean(true))) ;
+          let response_string = JSON.stringify(results) ;
+          console.log("_addC_handleAssignOutcomeToTag got results: " + response_string) ;
+          response.end(JSON.stringify(Boolean(true))) ;
         }
     }
 
-    _addC_handleGetTag(response, tagToAdd, error, results, fields) {
+    _addC_handleAddTag(response, query, tagToAdd, error, results, fields) {
         if (undefined === error || null !== error) {
-            let response_string = "Error querying for tag: " + error ;
+            let response_string = "Error adding, " + tag.name + ": " + error ;
+            console.log("_addC_handleAddTag: " + response_string) ;
+            response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
+        } else {
+            let response_string = JSON.stringify(results) ;
+            console.log("_addC_handleAddTag got results: " + response_string) ;
+            console.log("Calling fDB.newOutcomeTagAssignment") ;
+            this.fDB.newOutcomeTagAssignment(response, query, tagToAdd, this._addC_handleAssignOutcomeToTag.bind(this)) ;
+            // response.end(JSON.stringify(Boolean(true))) ;
+        }
+    }
+
+    _addC_handleGetTag(response, query, tagToAdd, error, results, fields) {
+        if (undefined === error || null !== error) {
+            let response_string = "Error querying for tag: " + JSON.stringify(error) ;
             console.log("__addC_getTag: " + response_string) ;
+            console.log("__addC_getTag results: " + JSON.stringify(results)) ;
             response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
         } else if (0 == results.length) {
             // IMPORTANT, we move forward adding a tag IFF we got zero results
             console.log("Calling fDB.addTag") ;
-            this.fDB.addTag(response, tagToAdd, this._addC_handleAddTag.bind(this))
+            this.fDB.addTag(response, query, tagToAdd, this._addC_handleAddTag.bind(this)) ;
         } else {
-            let response_string = "Error adding, " + name + ", tag already exists."
+            let response_string = "Error adding, " + tagToAdd.name + ", tag already exists."
             console.log("__addC_getTag: " + response_string ) ;
             response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
         }
     }
 
-    addTag(response, tagToAdd) {
-        this.fDB.getTag(response, tagToAdd, this._addC_handleGetTag.bind(this)) ;
+    addTag(response, query, tagToAdd) {
+      console.log("tagToAdd: " + JSON.stringify(tagToAdd)) ;
+      this.fDB.getTag(response, query, tagToAdd, this._addC_handleGetTag.bind(this)) ;
     }
 
     // Get All Customers
@@ -127,7 +145,7 @@ class FunnelObj {
         if (undefined === error || null !== error) {
             let response_string = "Error adding, " + name + ": " + error ;
             console.log("_addC_handleAddCustomer: " + response_string) ;
-            response.end(JSON.stringify( [ Boolean(false), result_string ] )) ;
+            response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
         } else {
             let response_string = JSON.stringify(results) ;
             console.log("_addC_handleAddCustomer got results: " + response_string) ;
@@ -180,7 +198,7 @@ class FunnelObj {
         if (undefined === error || null !== error) {
             let response_string = "Error adding, " + name + ": " + error ;
             console.log("_handleAddOutcome: " + response_string) ;
-            response.end(JSON.stringify( [ Boolean(false), result_string ] )) ;
+            response.end(JSON.stringify( [ Boolean(false), response_string ] )) ;
         } else {
             let response_string = JSON.stringify(results) ;
             console.log("_handleAddOutcome got results: " + response_string) ;
@@ -191,6 +209,22 @@ class FunnelObj {
     addOutcome(response, query) {
         this.fDB.newOutcome(response, query,
                             this._handleNewOutcome.bind(this)) ;
+    }
+
+    _handleGetAllOutcomes(response, error, results, fields) {
+        if (undefined === error || null !== error ) {
+            let response_string = "Error querying for all outcomes: " + error ;
+            console.log(response_string) ;
+            response.end(response_string) ;
+        } else {
+            let response_string = JSON.stringify(results) ;
+            console.log("getAllOutcomes got results: " + response_string) ;
+            response.end(response_string) ;
+        }
+    }
+
+    getAllOutcomes(response) {
+        this.fDB.getAllOutcomes(response, this._handleGetAllOutcomes.bind(this)) ;
     }
 }
 

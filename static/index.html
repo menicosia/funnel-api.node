@@ -15,21 +15,25 @@
       <h2>New Customer Evidence</h2>
       <table id="inputEvidence">
         <tr><th>Customer</th>
+          <th>Product</th>
           <th>Tag</th>
           <th>Date</th>
           <th>Snippet</th>
           <th>Source URL</th>
-          <th>Epic</th>
           <th>Proof of Feature Adoption</th></tr>
         <tbody id="formBody">
           <form action="/json/newEvidenceByCustomerID" method="put">
             <tr>
               <td><select name="customerID" id="customerlist"></select></td>
+              <td><select name="product">
+                <option value=""></option>
+                <option value="mysql">MySQL</option>
+                <option value="postgres">Postgres</option>
+              </select></td>
               <td><select name="tagID" id="taglist"></select></td>
               <td><input type="text" name="date" id="href"></input></td>
               <td><input type="text" name="snippet" id="snippet"></input></td>
               <td><input type="text" name="href" id="href"></input></td>
-              <td><input type="checkbox" name="isEpic" id="isEpic" value="1"></td>
               <td><input type="checkbox" name="usesFeature" id="usesFeature" value="1"></td>
             </tr>
             <tr>
@@ -64,6 +68,10 @@
             <td><input type="text" name="tagName"></input></td></tr>
           <tr><td>Desc</td>
             <td><textarea rows="4" name="tagDescription"></textarea></td></tr>
+          <tr><td>Epic?</td>
+            <td><input type="checkbox" name="isEpic" id="isEpic" value="1"></td></tr>
+          <tr><td>Outcome</td>
+            <td><select name="outcomeID" id="outcomelist"></select></td></tr>
           <tr><td colspan=2><input type="submit"></input></td></tr>
         </form>
       </table>

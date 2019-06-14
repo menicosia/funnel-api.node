@@ -12,7 +12,7 @@ var finalhandler = require('finalhandler') ;
 var http = require('http') ;
 var serveStatic = require('serve-static') ;
 var strftime = require('strftime') ;
-var time = require('time') ;
+// var time = require('time') ;
 var url = require('url') ;
 var util = require('util') ;
 var fs = require('fs') ;
@@ -80,8 +80,11 @@ function dispatchApi(funnelObj, request, response, method, query) {
         console.log("Got query: " + JSON.stringify(query)) ;
         if ("tagName" in query && "tagDescription" in query
             && "" !== query["tagName"] && "" !== query["tagDescription"]) {
-            let tagToAdd = new Tag(query["tagName"], query["tagDescription"]) ;
-            funnelObj.addTag(response, tagToAdd) ;
+            let tagToAdd = new Tag(query["tagName"],
+                                   query["tagDescription"],
+                                   "isEpic" in query ? query["isEpic"] : "0") ;
+            console.log("(dispatchApi) tagToAdd: " + JSON.stringify(tagToAdd)) ;
+            funnelObj.addTag(response, query, tagToAdd) ;
         } else {
             let response_string = "[ERROR] Expected \'tagName\' and \'tagDescription\'"
             console.log(response_string) ;
@@ -102,14 +105,18 @@ function dispatchApi(funnelObj, request, response, method, query) {
         }
         break ;
     case "getAllOutcomes":
+        console.log("Got query: " + JSON.stringify(query)) ;
+        funnelObj.getAllOutcomes(response) ;
         break ;
     case "getOutcome":
         break ;
     case "getAllTags":
         // funnelObj.readTable(response, "Tags") ;
+        console.log("Got query: " + JSON.stringify(query)) ;
         funnelObj.getAllTags(response) ;
         break ;
     case "getAllCustomers":
+        console.log("Got query: " + JSON.stringify(query)) ;
         funnelObj.getAllCustomers(response) ;
         break ;
     case "getCustomer":
